@@ -1,0 +1,43 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = "4.10.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+  client_id = ""
+  client_secret = ""
+  tenant_id = ""
+  subscription_id = ""
+}
+
+resource "azurerm_resource_group" "appgrp" {
+  name     = "app-grp"
+  location = "East US"
+}
+
+resource "azurerm_resource_group" "appgrp" {
+  name     = "app-grp"
+  location = "East US"
+}
+
+resource "azurerm_virtual_network" "app_network" {
+  name                = "app-network"
+  location            = "East US"
+  resource_group_name = azurerm_resource_group.appgrp.name
+  address_space       = ["10.0.0.0/16"]
+  
+  subnet {
+    name             = "websubnet"
+    address_prefixes = ["10.0.1.0/24"]
+  }
+
+  subnet {
+    name             = "appsubnet"
+    address_prefixes = ["10.0.2.0/24"]
+  }
+}
