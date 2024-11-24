@@ -26,7 +26,15 @@ resource "azurerm_network_interface" "webinterface" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.websubnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.webpip.id
   }
+}
+
+resource "azurerm_public_ip" "webpip" {
+  name                = "webPublicIp"
+  resource_group_name = azurerm_resource_group.appgrp.name
+  location            = local.resource_location
+  allocation_method   = "Static"
 }
 
 resource "azurerm_subnet" "appsubnet" {
