@@ -8,16 +8,32 @@ resource "azurerm_virtual_network" "app_network" {
   location            = local.resource_location
   resource_group_name = azurerm_resource_group.appgrp.name
   address_space       = local.virtual_network.address_prefixes
-  
-  subnet {
-    name             = "websubnet"
-    address_prefixes = [local.subnet_address_prefix[0]]
-  }
+}
 
-  subnet {
-    name             = "appsubnet"
-    address_prefixes = [local.subnet_address_prefix[1]]
+resource "azurerm_subnet" "websubnet" {
+  name                 = local.subnets[0].name
+  resource_group_name  = azurerm_resource_group.appgrp.name
+  virtual_network_name = azurerm_virtual_network.app_network.name
+  address_prefixes     = local.subnets[0].address_prefixes
+}
+
+resource "azurerm_network_interface" "webinterface" {
+  name                = "webinterface"
+  location            = local.resource_location
+  resource_group_name = azurerm_resource_group.appgrp.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.websubnet.id
+    private_ip_address_allocation = "Dynamic"
   }
+}
+
+resource "azurerm_subnet" "appsubnet" {
+  name                 = local.subnets[1].name
+  resource_group_name  = azurerm_resource_group.appgrp.name
+  virtual_network_name = azurerm_virtual_network.app_network.name
+  address_prefixes     = local.subnets[1].address_prefixes
 }
 
 resource "azurerm_storage_account" "appstorage" {
