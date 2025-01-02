@@ -1,7 +1,9 @@
 resource "azurerm_resource_group" "appgrp" {
   name     = "app-grp"
-  location = "East US"
+  location = local.resource_location
 }
+
+// Created virtual network / subnets with network security group. Storage Account with public access. Virtual machine with data disk.
 
 resource "azurerm_virtual_network" "app_network" {
   name                = local.virtual_network.name
